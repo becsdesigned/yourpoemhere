@@ -23,6 +23,21 @@
       overflow: hidden;
     }
 
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .top-label {
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
     #poem {
       font-family: 'Courier Prime', 'Courier New', Courier, monospace;
       font-size: clamp(18px, 2.8vw, 28px);
@@ -49,20 +64,22 @@
   </style>
 </head>
 <body>
-  <div id="poem"><span id="text"></span><span class="cursor" id="cursor"></span></div>
+
+  <div class="wrapper">
+    <div class="top-label">coming soon</div>
+    <div id="poem"><span id="text"></span><span class="cursor" id="cursor"></span></div>
+  </div>
 
   <script>
     const poem =
 `[your poem here]`;
 
-    const textEl  = document.getElementById('text');
-    const cursor  = document.getElementById('cursor');
+    const textEl = document.getElementById('text');
+    const cursor = document.getElementById('cursor');
 
-    // Typing speed range (ms)
     const MIN_DELAY = 45;
     const MAX_DELAY = 110;
 
-    // Longer pause after punctuation
     function charDelay(ch) {
       if (ch === '\n') return 320;
       if ('.!?,;:—'.includes(ch)) return 260 + Math.random() * 140;
@@ -72,7 +89,6 @@
     let i = 0;
     function typeNext() {
       if (i >= poem.length) {
-        // Pause at end, then clear and restart
         setTimeout(() => {
           textEl.textContent = '';
           i = 0;
@@ -86,7 +102,6 @@
       setTimeout(typeNext, delay);
     }
 
-    // Small initial pause before starting
     setTimeout(typeNext, 800);
   </script>
 </body>
