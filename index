@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>your poem here</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #302f2f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #poem {
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(18px, 2.8vw, 28px);
+      color: #ffffff;
+      white-space: pre;
+      line-height: 1.9;
+      letter-spacing: 0.03em;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.12em;
+      height: 1.1em;
+      background: #ffffff;
+      vertical-align: text-bottom;
+      margin-left: 1px;
+      animation: blink 0.75s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="poem"><span id="text"></span><span class="cursor" id="cursor"></span></div>
+
+  <script>
+    const poem =
+`[your poem here]`;
+
+    const textEl  = document.getElementById('text');
+    const cursor  = document.getElementById('cursor');
+
+    // Typing speed range (ms)
+    const MIN_DELAY = 45;
+    const MAX_DELAY = 110;
+
+    // Longer pause after punctuation
+    function charDelay(ch) {
+      if (ch === '\n') return 320;
+      if ('.!?,;:—'.includes(ch)) return 260 + Math.random() * 140;
+      return MIN_DELAY + Math.random() * (MAX_DELAY - MIN_DELAY);
+    }
+
+    let i = 0;
+    function typeNext() {
+      if (i >= poem.length) {
+        // Pause at end, then clear and restart
+        setTimeout(() => {
+          textEl.textContent = '';
+          i = 0;
+          setTimeout(typeNext, 600);
+        }, 4000);
+        return;
+      }
+      textEl.textContent += poem[i];
+      const delay = charDelay(poem[i]);
+      i++;
+      setTimeout(typeNext, delay);
+    }
+
+    // Small initial pause before starting
+    setTimeout(typeNext, 800);
+  </script>
+</body>
+</html>
