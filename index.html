@@ -130,8 +130,10 @@
 
     .field textarea {
       resize: none;
-      min-height: 90px;
+      min-height: unset;
+      height: auto;
       line-height: 1.7;
+      overflow: hidden;
     }
 
     .form-submit {
@@ -233,6 +235,14 @@
     setTimeout(typeNext, 800);
 
     /* ── FORM ── */
+    // Auto-resize textarea to match input height
+    const textarea = document.querySelector('textarea');
+    textarea.rows = 1;
+    textarea.addEventListener('input', () => {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
     const form = document.getElementById('bookingForm');
     const submitBtn = document.getElementById('submitBtn');
     const formMessage = document.getElementById('formMessage');
