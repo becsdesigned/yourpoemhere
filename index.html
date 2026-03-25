@@ -15,29 +15,25 @@
 
     html, body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background: #302f2f;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      padding: 60px 24px;
     }
 
     .wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 64px;
+      width: 100%;
+      max-width: 620px;
     }
 
-    .top-label {
-      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.3);
-    }
-
+    /* ── POEM ── */
     #poem {
       font-family: 'Courier Prime', 'Courier New', Courier, monospace;
       font-size: clamp(18px, 2.8vw, 28px);
@@ -45,6 +41,7 @@
       white-space: pre;
       line-height: 1.9;
       letter-spacing: 0.03em;
+      text-align: left;
     }
 
     .cursor {
@@ -61,22 +58,156 @@
       0%, 100% { opacity: 1; }
       50%       { opacity: 0; }
     }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ── FORM ── */
+    .form-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .form-heading {
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(14px, 1.8vw, 18px);
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .field input,
+    .field textarea {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(14px, 1.6vw, 17px);
+      color: #ffffff;
+      padding: 8px 0;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+      caret-color: #ffffff;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: rgba(255,255,255,0.15);
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-bottom-color: rgba(255,255,255,0.6);
+    }
+
+    .field textarea {
+      resize: none;
+      min-height: 90px;
+      line-height: 1.7;
+    }
+
+    .form-submit {
+      align-self: center;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      padding: 12px 32px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .form-submit:hover {
+      border-color: rgba(255,255,255,0.8);
+      color: #ffffff;
+    }
+
+    .form-submit:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .form-message {
+      text-align: center;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.45);
+      min-height: 1.2em;
+    }
   </style>
 </head>
 <body>
 
   <div class="wrapper">
-    <div class="top-label">coming soon</div>
-    <div id="poem"><span id="text"></span><span class="cursor" id="cursor"></span></div>
+
+    <!-- Typing poem -->
+    <div id="poem"><span id="text"></span><span class="cursor"></span></div>
+
+    <div class="divider"></div>
+
+    <!-- Booking form -->
+    <div class="form-section">
+      <div class="form-heading">Book typewriter poetry for your event.</div>
+
+      <form class="form-fields" id="bookingForm">
+        <div class="field">
+          <label>Name *</label>
+          <input type="text" name="name" placeholder="Your name" required />
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" name="email" placeholder="your@email.com" required />
+        </div>
+        <div class="field">
+          <label>Tell me a bit about your plans *</label>
+          <textarea name="message" placeholder="Event, location, and date..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="submitBtn">Send →</button>
+      </form>
+
+      <div class="form-message" id="formMessage"></div>
+    </div>
+
   </div>
 
   <script>
+    /* ── TYPEWRITER ── */
     const poem =
 `[your poem here]`;
 
     const textEl = document.getElementById('text');
-    const cursor = document.getElementById('cursor');
-
     const MIN_DELAY = 45;
     const MAX_DELAY = 110;
 
@@ -97,12 +228,47 @@
         return;
       }
       textEl.textContent += poem[i];
-      const delay = charDelay(poem[i]);
       i++;
-      setTimeout(typeNext, delay);
+      setTimeout(typeNext, charDelay(poem[i - 1]));
     }
 
     setTimeout(typeNext, 800);
+
+    /* ── FORM ── */
+    const form = document.getElementById('bookingForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      formMessage.textContent = '';
+
+      const data = new FormData(form);
+
+      try {
+        // Replace https://formspree.io/f/xqegzbvb with your Formspree URL
+        // e.g. https://formspree.io/f/abcdefgh
+        const res = await fetch('https://formspree.io/f/xqegzbvb', {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          form.reset();
+          submitBtn.textContent = 'Sent ✓';
+          formMessage.textContent = 'Thank you — I\'ll be in touch soon.';
+        } else {
+          throw new Error('Send failed');
+        }
+      } catch {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send →';
+        formMessage.textContent = 'Something went wrong. Please try again.';
+      }
+    });
   </script>
 </body>
 </html>
